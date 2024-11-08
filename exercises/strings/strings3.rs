@@ -14,7 +14,6 @@ fn trim_me(input: &str) -> String {
         if input[boundary.1..boundary.1 + 1] == whitespace {
             boundary.1 -= 1;
         }
-
         if input[boundary.0..boundary.0 + 1] != whitespace && input[boundary.1..boundary.1 + 1] != whitespace {
             return input[boundary.0..(boundary.1 + 1)].to_string();
         }
