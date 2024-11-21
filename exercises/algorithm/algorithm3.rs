@@ -3,10 +3,43 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+// enum Modd {
+//     FlagInLeft,
+//     FlagInRight
+// }
+
+fn sort<T: std::cmp::PartialOrd>(array: &mut [T]){
+    let len = array.len();
+
+    // let mut modd = Modd::FlagInLeft;
+    let mut modd = true;
+    let mut flag = 0;
+    let mut compare = len as usize - 1;
+
+    while flag != compare {
+        // if (array[flag] > array[compare]) ^ (modd != Modd::FlagInLeft) {
+        if (array[flag] > array[compare]) ^ (modd != true) {
+            array.swap(flag, compare);
+            (flag, compare) = (compare, flag);
+            modd = !modd;
+        };
+
+        // if modd == Modd::FlagInLeft {
+        if modd == true {
+            compare -= 1;
+        } else {
+            compare += 1;
+        };
+    };
+
+    if flag != 0 {
+        sort(&mut array[0..flag]);
+    }
+
+    if flag != len - 1 {
+        sort(&mut array[flag + 1..len]);
+    }
 }
 #[cfg(test)]
 mod tests {

@@ -2,8 +2,6 @@
 	stack
 	This question requires you to use a stack to achieve a bracket match
 */
-
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -32,7 +30,10 @@ impl<T> Stack<T> {
 	}
 	fn pop(&mut self) -> Option<T> {
 		// TODO
-		None
+		if self.size > 0 {
+			self.size -= 1;
+		}
+		self.data.pop()
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -99,10 +100,34 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 	}
 }
 
+// the difference of using stack and vec ???
+
 fn bracket_match(bracket: &str) -> bool
 {
 	//TODO
-	true
+	let mut c = Vec::new();
+	for i in bracket.chars() {
+		c.push(i);
+	}
+
+	let mut right = Vec::new();
+
+	while let Some(x) = c.pop() {
+		match "[{()}]".find(x) {
+			Some(0..3) => {
+				match right.pop() {
+					Some(r) => if ")}]".find(r) != "({[".find(x) {return false;},
+					None => return false
+				}
+			},
+			Some(3..6) => {
+				right.push(x);
+			},
+			_ => ()
+		}
+	}
+	if right.is_empty() {return true;} else {return false;}
+	
 }
 
 #[cfg(test)]

@@ -2,7 +2,6 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -30,6 +29,21 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        if self.adjacency_table.contains_key(edge.0) {
+            let dest = self.adjacency_table.get_mut(edge.0).unwrap();
+            dest.push((edge.1.to_string(),edge.2));
+        } else {
+            self.adjacency_table.insert(edge.0.to_string(), vec![(edge.1.to_string(),edge.2)]);
+        }
+
+        if self.adjacency_table.contains_key(edge.1) {
+            let dest = self.adjacency_table.get_mut(edge.1).unwrap();
+            dest.push((edge.0.to_string(),edge.2));
+        } else {
+            self.adjacency_table.insert(edge.1.to_string(), vec![(edge.0.to_string(),edge.2)]);
+        }
+
+        //     self.adjacency_table.insert(edge.0.to_string(), vec![(edge.1.to_string(),edge.2)]);
     }
 }
 pub trait Graph {
@@ -71,10 +85,10 @@ mod test_undirected_graph {
         graph.add_edge(("c", "a", 7));
         let expected_edges = [
             (&String::from("a"), &String::from("b"), 5),
+            (&String::from("b"), &String::from("c"), 10),
             (&String::from("b"), &String::from("a"), 5),
             (&String::from("c"), &String::from("a"), 7),
             (&String::from("a"), &String::from("c"), 7),
-            (&String::from("b"), &String::from("c"), 10),
             (&String::from("c"), &String::from("b"), 10),
         ];
         for edge in expected_edges.iter() {

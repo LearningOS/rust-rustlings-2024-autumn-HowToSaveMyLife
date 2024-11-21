@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,14 +68,58 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+}
+
+impl<T: std::cmp::PartialOrd> LinkedList<T> {
+    pub fn merge(list_a: LinkedList<T>,list_b: LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
+        let merge_len = list_a.length + list_b.length;
+
+        let mut res = Self {
+            length: merge_len,
             start: None,
             end: None,
+        };
+        let mut a_node_fir = list_a.start;
+        let mut b_node_fir = list_b.start;
+
+        while true {
+            let mut add_node_ptr: Option<NonNull<Node<T>>> = None;
+            let mut end: Option<NonNull<Node<T>>> = None;
+
+            if a_node_fir != None && b_node_fir != None {
+                unsafe{
+                    if (*a_node_fir.unwrap().as_ptr()).val < (*b_node_fir.unwrap().as_ptr()).val {
+                        add_node_ptr = a_node_fir;
+                        a_node_fir = (*a_node_fir.unwrap().as_ptr()).next;
+                    } else {
+                        add_node_ptr = b_node_fir;
+                        b_node_fir = (*b_node_fir.unwrap().as_ptr()).next;
+                    }
+                }
+            } else if a_node_fir == None {
+                add_node_ptr = b_node_fir;
+                end = list_b.end;
+                b_node_fir = None;
+            } else {
+                add_node_ptr = a_node_fir;
+                end = list_a.end;
+                a_node_fir = None;
+            }
+
+            match res.end {
+                None => res.start = add_node_ptr,
+                Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = add_node_ptr },
+            }
+            res.end = add_node_ptr;
+            
+            if a_node_fir == None && b_node_fir == None {
+                res.end = end;
+                break;
+            }
         }
+        res
 	}
 }
 
